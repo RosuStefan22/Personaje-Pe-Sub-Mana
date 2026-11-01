@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alecsia — Pe Sub Mână · animații</title>
+<style>
+  :root { --bg:#17151d; --panel:#211e2a; --line:#34303f; --txt:#ece9f3; --dim:#a39cb6; --acc:#8B6DC6; --acc2:#b39be6; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif; background:var(--bg); color:var(--txt); display:grid; grid-template-columns: 270px 1fr; height:100vh; }
+  aside { background:var(--panel); border-right:1px solid var(--line); padding:18px 14px; overflow:auto; }
+  h1 { font-size:20px; margin:0 0 2px; letter-spacing:.3px; }
+  .sub { color:var(--dim); font-size:12px; margin-bottom:16px; }
+  .grp { font-size:11px; text-transform:uppercase; letter-spacing:1.2px; color:var(--dim); margin:16px 4px 6px; }
+  button.anim { display:block; width:100%; text-align:left; background:transparent; color:var(--txt); border:1px solid transparent; border-radius:8px; padding:8px 10px; font-size:14px; cursor:pointer; }
+  button.anim:hover { background:#2b2737; }
+  button.anim.on { background:var(--acc); border-color:var(--acc2); color:#fff; }
+  main { display:flex; flex-direction:column; min-width:0; }
+  .stagewrap { flex:1; display:flex; align-items:center; justify-content:center; padding:18px; min-height:0; }
+  svg#stage { width:100%; max-height:100%; aspect-ratio:16/9; background:#C8C8C8; border-radius:10px; box-shadow:0 10px 40px #0008; }
+  .bar { display:flex; gap:10px; align-items:center; padding:12px 18px; border-top:1px solid var(--line); background:var(--panel); flex-wrap:wrap; }
+  .bar button, .bar select { background:#2b2737; color:var(--txt); border:1px solid var(--line); border-radius:7px; padding:7px 12px; font-size:13px; cursor:pointer; }
+  .bar button.primary { background:var(--acc); border-color:var(--acc2); }
+  .bar input[type=range] { accent-color: var(--acc); }
+  #scrub { flex:1; min-width:180px; }
+  .time { font-variant-numeric: tabular-nums; color:var(--dim); font-size:12px; width:92px; }
+  label { font-size:13px; color:var(--dim); display:flex; align-items:center; gap:6px; }
+  .ref { margin-top:18px; }
+  .ref img { width:100%; border-radius:8px; border:1px solid var(--line); }
+  .note { font-size:12px; color:var(--dim); line-height:1.5; margin-top:10px; }
+</style>
+</head>
+<body>
+<aside>
+  <h1>Alecsia</h1>
+  <div class="sub">Pe Sub Mână · rig 2D + animații</div>
+  <div id="list"></div>
+  <div class="ref">
+    <div class="grp">Referință</div>
+    <a href="referinta/alecsia-turnaround.jpg" target="_blank"><img src="referinta/alecsia-turnaround.jpg" alt="turnaround Alecsia"></a>
+    <div class="note">Tastatură: <b>Spațiu</b> play/pauză · <b>← →</b> cadru cu cadru · <b>↑ ↓</b> animația anterioară/următoare</div>
+  </div>
+</aside>
+<main>
+  <div class="stagewrap"><svg id="stage" xmlns="http://www.w3.org/2000/svg"></svg></div>
+  <div class="bar">
+    <button id="play" class="primary">⏸ Pauză</button>
+    <input id="scrub" type="range" min="0" max="1000" value="0">
+    <span class="time" id="time">0.00 / 0.00s</span>
+    <label>Viteză <select id="speed"><option>0.25</option><option>0.5</option><option selected>1</option><option>1.5</option><option>2</option></select></label>
+    <label><input type="checkbox" id="bg" checked> Fundal</label>
+    <button id="png">PNG cadru</button>
+    <button id="svg">SVG cadru</button>
+    <label>Sprite <select id="fps"><option value="12">12 fps</option><option value="24" selected>24 fps</option></select></label>
+    <button id="sheet">⬇ Sprite sheet</button>
+  </div>
+</main>
+<script src="rig/core.js"></script>
+<script src="rig/alecsia-side.js"></script>
+<script src="rig/alecsia-front.js"></script>
+<script src="rig/props.js"></script>
+<script src="rig/stage.js"></script>
+<script src="rig/animations.js"></script>
+<script src="rig/export.js"></script>
+<script>
+(function () {
+  const q = new URLSearchParams(location.search);
+  const svg = document.getElementById('stage');
+  const stage = new PSM.Stage(svg);
+  const ctx = { rig: stage.rig };
+  let cur = PSM.animById(q.get('anim') || 'walk') || PSM.anims[0];
+  let t = +(q.get('t') || 0), playing = q.get('paused') !== '1', speed = 1, last = performance.now();
+  if (q.get('nobg') === '1') { stage.showBg = false; document.getElementById('bg').checked = false; }
+
+  // lista
+  const list = document.getElementById('list');
+  const groups = {};
+  PSM.anims.forEach(a => { (groups[a.group] = groups[a.group] || []).push(a); });
+  const buttons = {};
+  for (const g in groups) {
+    const h = document.createElement('div'); h.className = 'grp'; h.textContent = g; list.appendChild(h);
+    groups[g].forEach(a => {
+      const b = document.createElement('button'); b.className = 'anim'; b.textContent = a.label + (a.loop ? '' : '  ▸');
+      b.onclick = () => select(a); list.appendChild(b); buttons[a.id] = b;
+    });
+  }
+  function select(a) {
+    cur = a; t = 0; playing = true; updateUI();
+    history.replaceState(null, '', '?anim=' + a.id);
+  }
+  function updateUI() {
+    for (const id in buttons) buttons[id].classList.toggle('on', id === cur.id);
+    document.getElementById('play').textContent = playing ? '⏸ Pauză' : '▶ Play';
+  }
+  function draw() {
+    const tt = cur.loop ? t % cur.T : Math.min(t, cur.T);
+    stage.render(cur.frame(tt, ctx), tt);
+    document.getElementById('scrub').value = Math.round(tt / cur.T * 1000);
+    document.getElementById('time').textContent = tt.toFixed(2) + ' / ' + cur.T.toFixed(2) + 's';
+  }
+  function loop(now) {
+    const dt = Math.min(0.1, (now - last) / 1000); last = now;
+    if (playing) {
+      t += dt * speed;
+      if (!cur.loop && t > cur.T + 1.2) t = 0; // reia dupa o scurta pauza
+    }
+    draw();
+    requestAnimationFrame(loop);
+  }
+  document.getElementById('play').onclick = () => { playing = !playing; updateUI(); };
+  document.getElementById('scrub').oninput = (e) => { playing = false; t = e.target.value / 1000 * cur.T; updateUI(); };
+  document.getElementById('speed').onchange = (e) => { speed = +e.target.value; };
+  document.getElementById('bg').onchange = (e) => { stage.showBg = e.target.checked; };
+  document.getElementById('png').onclick = async () => {
+    const tt = cur.loop ? t % cur.T : Math.min(t, cur.T);
+    const url = await PSM.exportFramePNG(stage, cur, tt, ctx, { scale: 2 });
+    PSM.download(url, `alecsia_${cur.id}_${tt.toFixed(2)}s.png`);
+  };
+  document.getElementById('svg').onclick = () => {
+    const blob = new Blob([PSM.serializeSVG(svg)], { type: 'image/svg+xml' });
+    PSM.download(URL.createObjectURL(blob), `alecsia_${cur.id}.svg`);
+  };
+  document.getElementById('sheet').onclick = async (e) => {
+    const btn = e.target; btn.disabled = true; btn.textContent = 'Se generează…';
+    const fps = +document.getElementById('fps').value;
+    const res = await PSM.exportSheet(stage, cur, ctx, { fps, transparent: !stage.showBg });
+    PSM.download(res.png, `alecsia_${cur.id}_${fps}fps.png`);
+    PSM.download(URL.createObjectURL(new Blob([JSON.stringify(res.meta, null, 2)], { type: 'application/json' })), `alecsia_${cur.id}_${fps}fps.json`);
+    btn.disabled = false; btn.textContent = '⬇ Sprite sheet';
+  };
+  window.addEventListener('keydown', (e) => {
+    if (e.code === 'Space') { playing = !playing; updateUI(); e.preventDefault(); }
+    if (e.code === 'ArrowRight') { playing = false; t += 1 / 24; updateUI(); }
+    if (e.code === 'ArrowLeft') { playing = false; t = Math.max(0, t - 1 / 24); updateUI(); }
+    if (e.code === 'ArrowDown' || e.code === 'ArrowUp') {
+      const i = PSM.anims.indexOf(cur) + (e.code === 'ArrowDown' ? 1 : -1);
+      select(PSM.anims[(i + PSM.anims.length) % PSM.anims.length]); e.preventDefault();
+    }
+  });
+  window.__psm = { stage, ctx, select: (id) => select(PSM.animById(id)), setT: (v) => { t = v; playing = false; draw(); }, get cur() { return cur; } };
+  updateUI();
+  requestAnimationFrame((n) => { last = n; loop(n); });
+})();
+</script>
+</body>
+</html>
