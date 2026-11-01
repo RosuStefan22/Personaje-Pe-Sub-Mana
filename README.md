@@ -1,10 +1,12 @@
 # Personaje — Pe Sub Mână
 
-Personajele animate 2D pentru **Pe Sub Mână**.
+Personajele animate pentru **Pe Sub Mână**.
 
-| Personaj | Stare | |
+| Personaj | 3D | 2D |
 |---|---|---|
-| [Alecsia](alecsia/) | rig 2D + 14 animații (mers, alergat, vorbit, tastat, urcat/coborât din mașină, condus, înot…) | ![Alecsia](alecsia/export/preview/walkLaptop.gif) |
+| [Alecsia](alecsia/) | [model 3D rig-uit + 13 animații](alecsia/3d/): `.blend`, `.glb`, `.fbx`, viewer în browser | [rig 2D + 14 animații](alecsia/README.md): SVG, sprite sheet-uri |
 
-Fiecare personaj are un `index.html` care se deschide direct în browser (viewer + export), plus sprite sheet-uri
-și previzualizări GIF gata exportate. Detalii în README-ul fiecărui personaj.
+![Alecsia 3D](alecsia/3d/preview/turnaround.png)
+
+Fiecare variantă are un `index.html` care se deschide direct în browser (dublu-click), plus fișierele exportate
+și previzualizări GIF. Detalii în README-ul fiecărui personaj.

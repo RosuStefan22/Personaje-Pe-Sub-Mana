@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alecsia 3D — Pe Sub Mână</title>
+<style>
+  :root { --bg:#17151d; --panel:#211e2a; --line:#34303f; --txt:#ece9f3; --dim:#a39cb6; --acc:#8B6DC6; --acc2:#b39be6; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background:var(--bg); color:var(--txt); display:grid; grid-template-columns: 250px 1fr; height:100vh; overflow:hidden; }
+  aside { background:var(--panel); border-right:1px solid var(--line); padding:18px 14px; overflow:auto; }
+  h1 { font-size:20px; margin:0 0 2px; } .sub { color:var(--dim); font-size:12px; margin-bottom:10px; }
+  .grp { font-size:11px; text-transform:uppercase; letter-spacing:1.2px; color:var(--dim); margin:14px 4px 6px; }
+  button.anim { display:block; width:100%; text-align:left; background:transparent; color:var(--txt); border:1px solid transparent; border-radius:8px; padding:7px 10px; font-size:14px; cursor:pointer; }
+  button.anim:hover { background:#2b2737; } button.anim.on { background:var(--acc); border-color:var(--acc2); color:#fff; }
+  main { display:flex; flex-direction:column; min-width:0; }
+  .wrap { flex:1; min-height:0; display:flex; align-items:center; justify-content:center; padding:14px; }
+  canvas { width:100%; height:100%; display:block; border-radius:10px; background:#c8c8c8; }
+  .bar { display:flex; gap:8px; align-items:center; padding:10px 14px; border-top:1px solid var(--line); background:var(--panel); flex-wrap:wrap; }
+  .bar button, .bar select { background:#2b2737; color:var(--txt); border:1px solid var(--line); border-radius:7px; padding:6px 10px; font-size:13px; cursor:pointer; }
+  .bar button.primary { background:var(--acc); border-color:var(--acc2); }
+  #scrub { flex:1; min-width:160px; accent-color: var(--acc); }
+  .time { font-variant-numeric: tabular-nums; color:var(--dim); font-size:12px; width:90px; }
+  label { font-size:13px; color:var(--dim); display:flex; gap:6px; align-items:center; }
+  .note { font-size:12px; color:var(--dim); line-height:1.5; margin-top:14px; }
+  body.embed { display:block; } body.embed aside, body.embed .bar { display:none; } body.embed .wrap { padding:0; position:fixed; inset:0; } body.embed canvas { border-radius:0; position:fixed; inset:0; width:100vw; height:100vh; }
+</style>
+</head>
+<body>
+<aside>
+  <h1>Alecsia 3D</h1>
+  <div class="sub">Pe Sub Mână · model rig-uit + animații</div>
+  <div id="list"></div>
+  <div class="note">Trage cu mouse-ul ca să rotești camera, rotița pentru zoom, click-dreapta pentru pan.<br><b>Spațiu</b> play/pauză · <b>← →</b> cadru cu cadru.</div>
+</aside>
+<main>
+  <div class="wrap"><canvas id="c"></canvas></div>
+  <div class="bar">
+    <button id="play" class="primary">⏸ Pauză</button>
+    <input id="scrub" type="range" min="0" max="1000" value="0">
+    <span class="time" id="time">0.00</span>
+    <label>Viteză <select id="speed"><option>0.25</option><option>0.5</option><option selected>1</option><option>1.5</option><option>2</option></select></label>
+    <label><input type="checkbox" id="outline" checked> Contur</label>
+    <button data-cam="front">Față</button><button data-cam="side">Profil</button><button data-cam="three">3/4</button><button data-cam="back">Spate</button><button data-cam="face">Fața</button>
+    <button id="shot">📷 PNG</button>
+  </div>
+</main>
+<script>if (new URLSearchParams(location.search).get('embed') === '1') document.body.classList.add('embed');</script>
+<!-- date incorporate (ca viewer-ul sa mearga si cu dublu-click, fara server) -->
+<script src="models/data.js"></script>
+<script src="viewer/viewer.js"></script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+{
+  "name": "alecsia-3d-viewer",
+  "private": true,
+  "description": "Viewer three.js pentru Alecsia 3D (Pe Sub Mana). Build: npm install && npm run build",
+  "scripts": { "build": "esbuild main.js --bundle --minify --format=iife --outfile=../viewer/viewer.js" },
+  "devDependencies": { "esbuild": "^0.25.0", "three": "^0.187.0" }
+}

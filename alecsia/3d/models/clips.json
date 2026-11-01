@@ -1,0 +1,165 @@
+{
+ "character": "Alecsia",
+ "project": "Pe Sub Mana",
+ "fps": 30,
+ "car_position": [
+  -1.25,
+  0.0,
+  0.0
+ ],
+ "clips": [
+  {
+   "name": "Idle",
+   "label": "Stă (idle)",
+   "group": "De bază",
+   "loop": true,
+   "env": "studio",
+   "props": [],
+   "cam": "three",
+   "speed": 0.0,
+   "duration": 4.0
+  },
+  {
+   "name": "Talk",
+   "label": "Vorbește (cu gesturi)",
+   "group": "Vorbit",
+   "loop": true,
+   "env": "studio",
+   "props": [],
+   "cam": "three",
+   "speed": 0.0,
+   "duration": 6.0
+  },
+  {
+   "name": "Wave",
+   "label": "Salută cu mâna",
+   "group": "Vorbit",
+   "loop": true,
+   "env": "studio",
+   "props": [],
+   "cam": "front",
+   "speed": 0.0,
+   "duration": 2.4
+  },
+  {
+   "name": "Walk",
+   "label": "Merge",
+   "group": "Deplasare",
+   "loop": true,
+   "env": "street",
+   "props": [],
+   "cam": "side",
+   "speed": 1.5738,
+   "duration": 1.1
+  },
+  {
+   "name": "WalkLaptop",
+   "label": "Merge cu laptopul",
+   "group": "Deplasare",
+   "loop": true,
+   "env": "street",
+   "props": [],
+   "cam": "three",
+   "speed": 1.5054,
+   "duration": 1.15
+  },
+  {
+   "name": "Run",
+   "label": "Aleargă",
+   "group": "Deplasare",
+   "loop": true,
+   "env": "street",
+   "props": [],
+   "cam": "side",
+   "speed": 4.7468,
+   "duration": 0.66
+  },
+  {
+   "name": "Jump",
+   "label": "Sare",
+   "group": "Deplasare",
+   "loop": true,
+   "env": "studio",
+   "props": [],
+   "cam": "three",
+   "speed": 0.0,
+   "duration": 1.8
+  },
+  {
+   "name": "SitDown",
+   "label": "Se așază la birou",
+   "group": "Laptop",
+   "loop": false,
+   "env": "room",
+   "props": [
+    "desk"
+   ],
+   "cam": "desk",
+   "speed": 0.0,
+   "duration": 2.6
+  },
+  {
+   "name": "Type",
+   "label": "Tastează la laptop",
+   "group": "Laptop",
+   "loop": true,
+   "env": "room",
+   "props": [
+    "desk"
+   ],
+   "cam": "desk",
+   "speed": 0.0,
+   "duration": 4.0
+  },
+  {
+   "name": "CarEnter",
+   "label": "Urcă în mașină",
+   "group": "Mașină",
+   "loop": false,
+   "env": "street",
+   "props": [
+    "car"
+   ],
+   "cam": "car",
+   "speed": 0.0,
+   "duration": 6.6
+  },
+  {
+   "name": "Drive",
+   "label": "Conduce",
+   "group": "Mașină",
+   "loop": true,
+   "env": "road",
+   "props": [
+    "car"
+   ],
+   "cam": "car",
+   "speed": 7.854,
+   "duration": 6.0
+  },
+  {
+   "name": "CarExit",
+   "label": "Coboară din mașină",
+   "group": "Mașină",
+   "loop": false,
+   "env": "street",
+   "props": [
+    "car"
+   ],
+   "cam": "car",
+   "speed": 0.0,
+   "duration": 7.2
+  },
+  {
+   "name": "Swim",
+   "label": "Înoată (craul)",
+   "group": "Apă",
+   "loop": true,
+   "env": "pool",
+   "props": [],
+   "cam": "pool",
+   "speed": 1.1,
+   "duration": 1.6
+  }
+ ]
+}

@@ -1,5 +1,7 @@
 # Alecsia — Pe Sub Mână
 
+> **Modelul 3D** (rig, expresii faciale, animații, `.blend` / `.glb` / `.fbx`) e în [`3d/`](3d/). Mai jos e varianta 2D.
+
 Personaj 2D animat, construit ca **rig vectorial (SVG + JavaScript)** pornind de la turnaround-ul de referință
 ([`referinta/alecsia-turnaround.jpg`](referinta/alecsia-turnaround.jpg)). Păstrează trăsăturile și stilul grafic din referință:
 contur negru gros (stil benzi desenate), culori plate cu umbre cel-shaded, păr negru lung și drept cu breton franjurat,
