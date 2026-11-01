@@ -8,6 +8,7 @@ const { execFileSync } = require('child_process');
 const { chromium } = require('playwright');
 const args = process.argv.slice(2);
 const opt = (n, d) => { const i = args.indexOf(n); if (i < 0) return d; const v = args[i + 1]; args.splice(i, 2); return v; };
+const SKIP = args.includes('--skip-existing'); if (SKIP) args.splice(args.indexOf('--skip-existing'), 1);
 const FPS = +opt('--fps', 12), W = +opt('--w', 480), H = +opt('--h', 360);
 const ROOT = path.resolve(__dirname, '..');
 const OUT = path.join(ROOT, 'alecsia', '3d', 'preview');
@@ -21,6 +22,7 @@ fs.mkdirSync(OUT, { recursive: true });
   const clips = await p.evaluate(() => window.__v.info.clips);
   for (const c of clips) {
     if (args.length && !args.includes(c.name)) continue;
+    if (fs.existsSync(path.join(OUT, c.name + '.gif')) && SKIP) continue;
     const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'alx3d-'));
     const n = Math.round(c.duration * FPS) + (c.loop ? 0 : Math.round(FPS * 0.8));
     await p.evaluate((name) => window.__v.select(name), c.name);
@@ -34,6 +36,7 @@ fs.mkdirSync(OUT, { recursive: true });
     console.log('•', c.name, n, 'cadre');
   }
   // turnaround
+  if (args.length && !args.includes('turnaround')) { await b.close(); return; }
   await p.setViewportSize({ width: 420, height: 640 });
   await p.evaluate(() => window.__v.select('Idle'));
   const shots = [];
